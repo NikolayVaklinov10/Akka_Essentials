@@ -23,7 +23,6 @@ object ActorsIntro extends App{
       case msg => println(s"[word counter] I cannot understand ${msg.toString}")
     }
   }
-  
 
   // part3 - instantiate out actor
   val wordCounter = actorSystem.actorOf(Props[WordCountActor], "wordCounter")

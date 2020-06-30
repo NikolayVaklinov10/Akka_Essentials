@@ -2,6 +2,7 @@ package part2actors
 
 import akka.actor.{Actor, ActorRef, ActorSystem, Props}
 
+
 object ActorCapabilities extends App {
 
   class SimpleActor extends Actor {

@@ -22,6 +22,7 @@ object ActorCapabilities extends App {
 
   simpleActor ! "hello, actor"
 
+
   // 1 - messages can be of any type
   // a) messages must be IMMUTABLE
   // b) messages must be SERIALIZABLE

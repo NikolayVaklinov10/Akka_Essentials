@@ -17,6 +17,7 @@ object ActorCapabilities extends App {
     }
   }
 
+
   val system = ActorSystem("actorCapabilitiesDemo")
   val simpleActor = system.actorOf(Props[SimpleActor], "simpleActor")
 

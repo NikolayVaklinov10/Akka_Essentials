@@ -16,7 +16,7 @@ object ActorCapabilities extends App {
       case WirelessPhoneMessage(content, ref) => ref forward (content + "s") // i keep the original sender of the WPM
     }
   }
-  
+
 
 
   val system = ActorSystem("actorCapabilitiesDemo")

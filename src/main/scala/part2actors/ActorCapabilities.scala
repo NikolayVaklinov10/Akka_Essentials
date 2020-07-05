@@ -17,6 +17,7 @@ object ActorCapabilities extends App {
     }
   }
 
+  
 
 
   val system = ActorSystem("actorCapabilitiesDemo")

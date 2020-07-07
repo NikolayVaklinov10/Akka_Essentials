@@ -25,7 +25,6 @@ object ActorsIntro extends App{
   }
 
 
-
   // part3 - instantiate out actor
   val wordCounter = actorSystem.actorOf(Props[WordCountActor], "wordCounter")
   val anotherWordCounter = actorSystem.actorOf(Props[WordCountActor], "anotherWordCounter")

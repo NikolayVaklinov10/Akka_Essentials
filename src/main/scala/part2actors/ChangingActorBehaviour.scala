@@ -72,6 +72,7 @@ object ChangingActorBehaviour extends App {
 
 
   mom ! MomStart(fussyKid)
+  
 
   /*
     mom receives MomStart

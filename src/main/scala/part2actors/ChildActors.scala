@@ -88,8 +88,14 @@ object ChildActors extends App {
 
     }
 
-    def deposit(funds: Int) = amount += funds
-    def withdraw(funds: Int) = amount -= funds
+    def deposit(funds: Int) = {
+      println(s"${self.path} depositing $funds on top of $amount")
+      amount += funds
+    }
+    def withdraw(funds: Int) = {
+      println(s"${self.path} withdrawing $funds from $amount")
+      amount -= funds
+    }
   }
 
   object CreditCard {
@@ -114,7 +120,9 @@ object ChildActors extends App {
 
   val bankAccountRef = system.actorOf(Props[NaiveBankAccount], "account")
   bankAccountRef ! InitializeAccount
+  bankAccountRef ! Deposit(100)
 
+  Thread.sleep(500)
   val ccSelection = system.actorSelection("/user/account/card")
   ccSelection ! CheckStatus
 }

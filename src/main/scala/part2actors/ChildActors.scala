@@ -58,4 +58,12 @@ object ChildActors extends App {
    */
   val childSelection = system.actorSelection("/user/parent/child")
   childSelection ! "I found you!"
+
+  /**
+   * Danger!
+   *
+   * NEVER PASS MUTABLE ACTOR STATE, OR TH `THIS` REFERENCE TO CHILD ACTORS.
+   *
+   * NEVER IN YOUR LIFE.
+   */
 }

@@ -42,4 +42,15 @@ object ChildActors extends App {
   parent ! CreateChild("child")
   parent ! TellChild("hey Kid!")
 
+  // actor's hierarchies
+  // parent -> child -> grandChild
+  //        -> child2 ->
+
+  /*
+    Guardian actors (top-level)
+    - /system = system guardian
+    - /user = user-level guardian
+    - / = the root guardian
+   */
+
 }

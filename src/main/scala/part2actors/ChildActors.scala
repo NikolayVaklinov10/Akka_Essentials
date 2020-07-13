@@ -53,4 +53,9 @@ object ChildActors extends App {
     - / = the root guardian
    */
 
+  /**
+   * Actor selection
+   */
+  val childSelection = system.actorSelection("/user/parent/child")
+  childSelection ! "I found you!"
 }

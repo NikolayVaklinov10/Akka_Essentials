@@ -1,6 +1,6 @@
 package part2actors
 
-import akka.actor.{Actor, ActorRef, Props}
+import akka.actor.{Actor, ActorRef, ActorSystem, Props}
 
 object ChildActors extends App {
   // beginning of the child actor code
@@ -25,8 +25,7 @@ object ChildActors extends App {
     }
 
     def withChild(childRef: ActorRef):Receive = {
-      case TellChild(message) =>
-        if (childRef != null) childRef forward message
+      case TellChild(message) => childRef forward message
     }
   }
 
@@ -36,5 +35,7 @@ object ChildActors extends App {
     }
   }
 
+  // initializing actor system
+  val system = ActorSystem("ParentChildDemo")
 
 }

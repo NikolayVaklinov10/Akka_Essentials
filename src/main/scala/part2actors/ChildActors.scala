@@ -1,6 +1,7 @@
 package part2actors
 
 import akka.actor.{Actor, ActorRef, ActorSystem, Props}
+import part2actors.ChildActors.CreditCard.{AttachToAccount, CheckStatus}
 import part2actors.ChildActors.Parent.{CreateChild, TellChild}
 
 object ChildActors extends App {
@@ -66,4 +67,54 @@ object ChildActors extends App {
    *
    * NEVER IN YOUR LIFE.
    */
+
+  object NaiveBankAccount {
+    case class Deposit(amount: Int)
+    case class Withdraw(amount: Int)
+    case object InitializeAccount
+  }
+  class NaiveBankAccount extends Actor {
+    import NaiveBankAccount._
+    import CreditCard._
+
+    var amount = 0
+
+    override def receive: Receive = {
+      case InitializeAccount =>
+        val creditCardRef = context.actorOf(Props[CreditCard], "card")
+        creditCardRef ! AttachToAccount(this) // !!
+      case Deposit(funds) => deposit(funds)
+      case Withdraw(funds) => withdraw(funds)
+
+    }
+
+    def deposit(funds: Int) = amount += funds
+    def withdraw(funds: Int) = amount -= funds
+  }
+
+  object CreditCard {
+    case class AttachToAccount(bankAccount: NaiveBankAccount) // !!
+    case object CheckStatus
+  }
+  class CreditCard extends Actor {
+    override def receive: Receive = {
+      case AttachToAccount(account) => context.become(attachedTo(account))
+    }
+
+    def attachedTo(account: NaiveBankAccount): Receive = {
+      case CheckStatus =>
+        println(s"${self.path} your message has been processed")
+        // benign
+        account.withdraw(1) // because I can
+    }
+  }
+
+  import NaiveBankAccount._
+  import CreditCard._
+
+  val bankAccountRef = system.actorOf(Props[NaiveBankAccount], "account")
+  bankAccountRef ! InitializeAccount
+
+  val ccSelection = system.actorSelection("/user/account/card")
+  ccSelection ! CheckStatus
 }

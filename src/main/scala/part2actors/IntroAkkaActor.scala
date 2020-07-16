@@ -17,7 +17,7 @@ object IntroAkkaActor extends App {
   val configString =
     """
       | akka {
-      | loglevel = "DEBUG"
+      | loglevel = "ERROR"
       | }
       |""".stripMargin
 
@@ -26,4 +26,7 @@ object IntroAkkaActor extends App {
   val system = ActorSystem("ConfigurationDemo", ConfigFactory.load(config))
   // instances
   val actor = system.actorOf(Props[SimpleLoggingActor])
+
+  // actor message
+  actor ! "A message to remember"
 }

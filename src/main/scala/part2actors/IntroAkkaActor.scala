@@ -50,6 +50,9 @@ object IntroAkkaActor extends App {
    * 4 - separate config in another file
    */
 
+  val separateConfig = ConfigFactory.load("secretFolder/secreteConfiguration.cong")
+  println(s"separate config log level: ${separateConfig.getString("akka.loglevel")}")
+
 
 
 }

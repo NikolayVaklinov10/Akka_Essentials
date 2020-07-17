@@ -6,6 +6,7 @@ import org.scalatest.{BeforeAndAfterAll, WordSpecLike}
 import part3testing.BasicSpec.{BlackHole, LabTestActor, SimpleActor}
 
 import scala.concurrent.duration._
+import scala.util.Random
 
 class BasicSpec extends TestKit(ActorSystem("BasicSpec"))
   with ImplicitSender
@@ -43,7 +44,35 @@ class BasicSpec extends TestKit(ActorSystem("BasicSpec"))
     val labTestActor = system.actorOf(Props[LabTestActor])
     "turn a string into uppercase" in {
       labTestActor ! "I love Akka"
-      expectMsg("I LOVE AKKA")
+      val replay = expectMsgType[String]
+
+      assert(replay == "I LOVE AKKA")
+    }
+
+    "reply to a greeting" in {
+      labTestActor ! "greeting"
+      expectMsgAnyOf("hi", "hello")
+    }
+
+    "reply with favourite tech" in {
+      labTestActor ! "favoriteTech"
+      expectMsgAllOf("Scala", "Akka")
+    }
+
+    "reply with cool tech in a different way" in {
+      labTestActor ! "favoriteTech"
+      val messages = receiveN(2)  // Seq[Any]
+
+      // free to do more complicated assertions
+    }
+
+    "reply with cool tech in a fancy way" in {
+      labTestActor ! "favoriteTech"
+
+      expectMsgPF() {
+        case "Scala" => // only care that the PF is defined
+        case "Akka" =>
+      }
     }
   }
 
@@ -63,7 +92,13 @@ object BasicSpec {
   }
 
   class LabTestActor extends Actor {
+    val random = new Random()
     override def receive: Receive = {
+      case "greeting" =>
+        if (random.nextBoolean()) sender() ! "hi" else sender() ! "hello"
+      case "favoriteTech" =>
+        sender() ! "Scala"
+        sender() ! "Akka"
       case message: String => sender() ! message.toUpperCase()
     }
   }

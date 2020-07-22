@@ -18,6 +18,7 @@ class InterceptingLogsSpec extends TestKit(ActorSystem("InterceptingLogsSpec", C
 
   val item = "Rock the JVM Akka course"
   val creditCard = "1234-1234-1234-1234"
+  val invalidCreditCard = "0000-0000-0000-0000"
 
   "A checkout flow" should {
     "correctly log the dispatch of an order" in {
@@ -25,6 +26,13 @@ class InterceptingLogsSpec extends TestKit(ActorSystem("InterceptingLogsSpec", C
         // test code
         val checkoutRef = system.actorOf(Props[CheckoutActor])
         checkoutRef ! Checkout(item, creditCard)
+      }
+    }
+
+    "freak out if the payment is denied" in {
+      EventFilter[RuntimeException](occurrences = 1) intercept {
+        val checkoutRef = system.actorOf(Props[CheckoutActor])
+        checkoutRef ! Checkout(item, invalidCreditCard)
       }
     }
   }
@@ -55,7 +63,7 @@ object InterceptingLogsSpec {
       case PaymentAccepted =>
         fulfillmentManager ! DispatchOrder(item)
         context.become(pendingFulfillment(item))
-      case PaymentDenied => // TODO
+      case PaymentDenied => throw new RuntimeException("I can't handle this anymore")
     }
     def pendingFulfillment(item: String): Receive = {
       case OrderConfirmed => context.become(awaitingCheckout)

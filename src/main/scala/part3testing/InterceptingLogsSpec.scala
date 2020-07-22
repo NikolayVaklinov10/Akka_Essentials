@@ -66,7 +66,10 @@ object InterceptingLogsSpec {
     override def receive: Receive = {
       case AuthorizedCard(card) =>
         if (card.startsWith("0")) sender() ! PaymentDenied
-        else sender() ! PaymentAccepted
+        else {
+          Thread.sleep(4000)
+          sender() ! PaymentAccepted
+        }
     }
   }
 

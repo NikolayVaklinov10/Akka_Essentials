@@ -1,6 +1,6 @@
 package part4faulttolerence
 
-import akka.actor.{Actor, ActorSystem}
+import akka.actor.{Actor, ActorSystem, Props}
 import akka.testkit.{ImplicitSender, TestKit}
 import org.scalatest.{BeforeAndAfterAll, WordSpecLike}
 
@@ -17,6 +17,15 @@ class SupervisionSpec  extends TestKit(ActorSystem("SupervisionSpec"))
 
 object SupervisionSpec {
 
+  class Supervisor extends Actor {
+    override def receive: Receive = {
+      case props: Props =>
+        val childRef = context.actorOf(props)
+        sender() ! childRef
+    }
+  }
+
+  case object Report
   class FussyWordCounter extends Actor {
     var words = 0
 
@@ -26,6 +35,7 @@ object SupervisionSpec {
         if (sentence.length > 20) throw new RuntimeException("sentence is too big")
         else if (!Character.isUpperCase(sentence(0))) throw new IllegalArgumentException("sentence must start with uppercase")
         else words += sentence.split(" ").length
+      case _ => throw new Exception("can only receive strings")
     }
   }
 }

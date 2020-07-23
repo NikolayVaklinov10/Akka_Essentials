@@ -1,6 +1,7 @@
 package part4faulttolerence
 
-import akka.actor.{Actor, ActorSystem, Props}
+import akka.actor.SupervisorStrategy.{Escalate, Restart, Resume, Stop}
+import akka.actor.{Actor, ActorRef, ActorSystem, OneForOneStrategy, Props}
 import akka.testkit.{ImplicitSender, TestKit}
 import org.scalatest.{BeforeAndAfterAll, WordSpecLike}
 
@@ -13,11 +14,31 @@ class SupervisionSpec  extends TestKit(ActorSystem("SupervisionSpec"))
 
   import SupervisionSpec._
 
+  "A supervisor" should {
+    "resume its child in case of minor fault" in {
+      val supervisor = system.actorOf(Props[Supervisor])
+      supervisor ! Props[FussyWordCounter]
+      val child = expectMsgType[ActorRef]
+
+      child ! "I love Akka"
+      child ! Report
+      expectMsg(3)
+    }
+  }
+
 }
 
 object SupervisionSpec {
 
   class Supervisor extends Actor {
+
+    override val supervisorStrategy = OneForOneStrategy() {
+      case _: NullPointerException => Restart
+      case _: IllegalArgumentException => Stop
+      case _: RuntimeException => Resume
+      case _: Exception => Escalate
+    }
+
     override def receive: Receive = {
       case props: Props =>
         val childRef = context.actorOf(props)

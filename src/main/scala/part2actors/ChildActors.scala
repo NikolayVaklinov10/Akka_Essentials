@@ -68,7 +68,7 @@ object ChildActors extends App {
    * NEVER IN YOUR LIFE.
    */
 
-  
+
   object NaiveBankAccount {
     case class Deposit(amount: Int)
     case class Withdraw(amount: Int)

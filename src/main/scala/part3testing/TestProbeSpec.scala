@@ -15,6 +15,7 @@ class TestProbeSpec extends TestKit(ActorSystem("TestProbeSpec"))
 
   import TestProbeSpec._
 
+
   "A master actor" should {
     "register a slave" in {
       val master = system.actorOf(Props[Master])

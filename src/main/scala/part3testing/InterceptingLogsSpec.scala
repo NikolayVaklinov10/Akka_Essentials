@@ -36,7 +36,6 @@ class InterceptingLogsSpec extends TestKit(ActorSystem("InterceptingLogsSpec", C
       }
     }
   }
-
 }
 
 object InterceptingLogsSpec {

@@ -13,11 +13,13 @@ object TimersSchedulers extends App {
   val system = ActorSystem("SchedulersTimersDemo")
   val simpleActor = system.actorOf(Props[SimpleActor])
 
+  import system.dispatcher
+
   system.log.info("Scheduling reminder for simpleActor")
   // the first scheduler
   system.scheduler.scheduleOnce(1 second){
     simpleActor ! "reminder"
-  }(system.dispatcher)
+  }
 
 
 

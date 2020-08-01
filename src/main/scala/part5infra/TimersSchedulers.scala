@@ -12,24 +12,64 @@ object TimersSchedulers extends App {
     }
   }
   val system = ActorSystem("SchedulersTimersDemo")
-  val simpleActor = system.actorOf(Props[SimpleActor])
+//  val simpleActor = system.actorOf(Props[SimpleActor])
 
   import system.dispatcher
 
-  system.log.info("Scheduling reminder for simpleActor")
-  // the first scheduler
-  system.scheduler.scheduleOnce(1 second){
-    simpleActor ! "reminder"
+//  system.log.info("Scheduling reminder for simpleActor")
+//  // the first scheduler
+//  system.scheduler.scheduleOnce(1 second){
+//    simpleActor ! "reminder"
+//  }
+//
+//  // scheduling repeated message
+//  val routine: Cancellable = system.scheduler.schedule(1 second, 2 seconds){
+//    simpleActor ! "heartbeat"
+//  }
+//
+//  system.scheduler.scheduleOnce(5 seconds){
+//    routine.cancel()
+//  }
+
+  /**
+   * Exercise: implement a self-closing actor
+   *
+   * - if the actor receives a message (anything), you have 1 second to send it another message
+   * - if the time window expires, the actor will stop itself
+   * - if you send another message, the time window is reset
+   */
+
+  class SelfClosingActor extends Actor with ActorLogging {
+
+    var schedule = createTimeoutWindow()
+
+    def createTimeoutWindow(): Cancellable = {
+      context.system.scheduler.scheduleOnce(1 seconds){
+        self ! "timeout"
+      }
+    }
+
+    override def receive: Receive = {
+      case "timeout" =>
+        log.info("Stopping myself")
+        context.stop(self)
+      case message =>
+        log.info(s"Received $message, staying alive")
+        schedule.cancel()
+        schedule = createTimeoutWindow()
+    }
   }
 
-  // scheduling repeated message
-  val routine: Cancellable = system.scheduler.schedule(1 second, 2 seconds){
-    simpleActor ! "heartbeat"
+  val selfClosingActor = system.actorOf(Props[SelfClosingActor], "selfClosingActor")
+  system.scheduler.scheduleOnce(250 millis) {
+    selfClosingActor ! "ping"
   }
 
-  system.scheduler.scheduleOnce(5 seconds){
-    routine.cancel()
+  system.scheduler.scheduleOnce(2 seconds) {
+    system.log.info("sending pong to the self-closing actor")
+    selfClosingActor ! "pong"
   }
+
 
 
 

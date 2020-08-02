@@ -86,5 +86,8 @@ object Routers extends App {
    */
   groupMaster2 ! Broadcast("hello, everyone")
 
+  // PoisonPill and Kill are NOT routed
+  // AddRoutee, Remove, Get handled only by the routing actors
+
 
 }

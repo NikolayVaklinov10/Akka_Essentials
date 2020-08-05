@@ -14,6 +14,7 @@ class FSMSpec extends TestKit(ActorSystem("FSMSpec"))
     TestKit.shutdownActorSystem(system)
   }
 
+  
   import FSMSpec._
 
   def runTestSuite(props: Props): Unit = {

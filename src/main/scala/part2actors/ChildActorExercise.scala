@@ -1,6 +1,6 @@
 package part2actors
 
-import akka.actor.{Actor, ActorRef, Props}
+import akka.actor.{Actor, ActorRef, ActorSystem, Props}
 
 object ChildActorExercise extends App {
 
@@ -51,5 +51,25 @@ object ChildActorExercise extends App {
 
     }
   }
+
+  class TestActor extends Actor {
+    import WordCounterMaster._
+
+    override def receive: Receive = {
+      case "go" =>
+        val master = context.actorOf(Props[WordCounterMaster], "master")
+        master ! Initialize(3)
+        val texts = List("I love Akka", "Scala is super dope", "yes", "me too")
+        texts.foreach(text => master ! text)
+      case count: Int =>
+        println(s"[test actor] I received a reply: $count")
+    }
+  }
+
+  val system = ActorSystem("roundRobinWordCountExercise")
+  val testActor = system.actorOf(Props[TestActor], "testActor")
+  testActor ! "go"
+
+
 
 }

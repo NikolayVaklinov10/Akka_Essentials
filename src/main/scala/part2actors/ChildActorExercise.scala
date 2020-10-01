@@ -52,6 +52,7 @@ object ChildActorExercise extends App {
     }
   }
 
+  
   class TestActor extends Actor {
     import WordCounterMaster._
 

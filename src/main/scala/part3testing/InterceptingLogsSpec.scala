@@ -29,6 +29,7 @@ class InterceptingLogsSpec extends TestKit(ActorSystem("InterceptingLogsSpec", C
       }
     }
 
+
     "freak out if the payment is denied" in {
       EventFilter[RuntimeException](occurrences = 1) intercept {
         val checkoutRef = system.actorOf(Props[CheckoutActor])

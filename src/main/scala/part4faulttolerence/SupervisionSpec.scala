@@ -83,6 +83,7 @@ class SupervisionSpec extends TestKit(ActorSystem("SupervisionSpec"))
     }
   }
 
+  
   "An all-for-one supervisor" should {
     "apply the all-for-one strategy" in {
       val supervisor = system.actorOf(Props[AllForOneSupervisor], "allForOneSupervisor")

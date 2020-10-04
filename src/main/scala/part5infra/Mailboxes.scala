@@ -14,6 +14,7 @@ object Mailboxes extends App {
       case message => log.info(message.toString)
     }
   }
+  
 
   /**
    * Interesting case #1 - custom priority mailbox

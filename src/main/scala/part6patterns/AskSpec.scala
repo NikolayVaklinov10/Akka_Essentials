@@ -20,6 +20,7 @@ class AskSpec extends TestKit(ActorSystem("AskSpec"))
     TestKit.shutdownActorSystem(system)
   }
 
+
   import AskSpec._
 
   "An authenticator" should {
